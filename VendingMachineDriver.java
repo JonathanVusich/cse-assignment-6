@@ -1,20 +1,25 @@
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class VendingMachineDriver {
   public static void main(String[] filenames) {
     
-    UserInterface ui = new ConsoleInterface();
+    UserInterface ui = new GUIInterface();
     Map<String, ArrayList<Item>> categories = getCategories(filenames);
-    BigDecimal revenue = BigDecimal(0);
+    BigDecimal revenue = new BigDecimal(0);
+    String categoryName;
+    int itemId;
     
-    while ((String categoryName = ui.waitForCategorySelection(categories.keySet().toArray())) != -1) {
+    while ((categoryName = ui.waitForCategorySelection(categories.keySet())) != "") {
     	VendingMachine vm = new VendingMachine(categories.get(categoryName));
       
       back_to_category_select:
       while (true) {
-        if (vm.waitForMoney() == -1) {
+        if (ui.waitForMoney() == -1) {
           ui.displayResult(TransactionResult.CANCELLED, vm.dispenseChange());
           break back_to_category_select;
         }
@@ -22,15 +27,15 @@ public class VendingMachineDriver {
         ui.displayBalance(vm.getBalance());
         
         back_to_insert_money:
-    	while ((int itemId = ui.waitForItemSelection(vm.currentStock())) != -1) {
+    	while ((itemId = ui.waitForItemSelection(vm.currentStock())) != -1) {
           TransactionResult result = vm.vend(itemId);
           
           switch (result) {
-            case TransactionResult.SUCCESS:
+            case SUCCESS:
               ui.displayResult(result, vm.dispenseChange());
               break back_to_category_select;
              
-            case TransactionResult.INSUFFICIENT_FUNDS:
+            case INSUFFICIENT_FUNDS:
               ui.displayResult(result, vm.getBalance());
               break back_to_insert_money;
              
@@ -50,8 +55,8 @@ public class VendingMachineDriver {
   
   
 
-  private Map<String, ArrayList<Item>> getCategories(String[] filenames) {
-    Map<String, ArrayList<Item>> categories = new HashMap<String, ArrayList<Item>>();
+  private static Map<String, ArrayList<Item>> getCategories(String[] filenames) {
+    HashMap<String, ArrayList<Item>> categories = new HashMap<String, ArrayList<Item>>();
     
     for (String f : filenames) {
       String basename = f.split("\\.(?=[^\\.]+$)")[0];
@@ -62,7 +67,7 @@ public class VendingMachineDriver {
     return categories;
   }
   
-  private ArrayList<Item> parseFile(String filename) {
+  private static ArrayList<Item> parseFile(String filename) {
     ArrayList<Item> stock = new ArrayList<Item>();
     
     try (File file = new File(filename)) {

@@ -11,5 +11,6 @@ public enum TransactionResult {
     // Customer did not insert enough money
     INSUFFICIENT_FUNDS,
     
+    
     CANCELLED
   }

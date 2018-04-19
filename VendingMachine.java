@@ -21,7 +21,7 @@ public class VendingMachine {
       return TransactionResult.INVALID_ITEM;
     }
     
-    final Item item = this.items[itemId];
+    final Item item = this.items.get(itemId);
     
     if (new BigDecimal(item.price()).compareTo(this.money) == 1) {
       return TransactionResult.INSUFFICIENT_FUNDS;
