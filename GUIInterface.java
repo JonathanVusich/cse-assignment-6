@@ -117,6 +117,16 @@ public class GUIInterface implements UserInterface, ActionListener {
 	public String waitForCategorySelection(Set<String> categories) {
 		String[] category = categories.stream().toArray(String[]::new);
 		chooseMachine = new JComboBox(category);
+		chooseMachine.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if (event.getSource() instanceof JComboBox) {
+					JComboBox cb = (JComboBox)event.getSource();
+					vendingMachine = (String)cb.getSelectedItem();
+					selection = true;				
+				}
+			}
+		});
+		
 		JFrame machineSelect = new JFrame();
 		machineSelect.setTitle("Vending Machine Selection");
 		machineSelect.setSize(FRAME_HEIGHT, FRAME_WIDTH);
@@ -125,32 +135,26 @@ public class GUIInterface implements UserInterface, ActionListener {
 		machineSelect.setVisible(true);
 		machineSelect.validate();
 		
-		synchronized(this) {
-			while(vendingMachine == "") {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					System.out.println("Error! Interrupted thread!");
-				}
-			}
+		while(!selection) {
 		}
+		
 		this.selection = false;
+		machineSelect.setVisible(false);
 		return vendingMachine;
 		
 		
 	}
 
 	@Override
-	public int waitForItemSelection(ArrayList<Item> items) {
+	public BigDecimal waitForItemSelection(ArrayList<Item> items) {
 		// TODO Auto-generated method stub
-		return 0;
+		return new BigDecimal(0);
 	}
 
 	@Override
-	public int waitForMoney() {
+	public BigDecimal waitForMoney() {
 		// TODO Auto-generated method stub
-		return 0;
+		return new BigDecimal(0);
 	}
 
 	@Override
@@ -173,14 +177,7 @@ public class GUIInterface implements UserInterface, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource() instanceof JComboBox) {
-			synchronized(this) {
-			JComboBox cb = (JComboBox)event.getSource();
-			this.vendingMachine = (String)cb.getSelectedItem();
-			this.selection = true;
-			this.chooseMachine.notifyAll();
-			}
-		}
+		
 		}
 
 }

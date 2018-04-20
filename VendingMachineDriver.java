@@ -16,14 +16,14 @@ public class VendingMachineDriver {
     Map<String, ArrayList<Item>> categories = getCategories(filenames);
     BigDecimal revenue = new BigDecimal(0);
     String categoryName;
-    int itemId;
+    String itemId;
     
     while ((categoryName = ui.waitForCategorySelection(categories.keySet())) != "") {
     	VendingMachine vm = new VendingMachine(categories.get(categoryName));
       
       back_to_category_select:
       while (true) {
-        if (ui.waitForMoney() == -1) {
+        if (ui.waitForMoney() == new BigDecimal(-1)) {
           ui.displayResult(TransactionResult.CANCELLED, vm.dispenseChange());
           break back_to_category_select;
         }
@@ -31,7 +31,7 @@ public class VendingMachineDriver {
         ui.displayBalance(vm.getBalance());
         
         back_to_insert_money:
-    	while ((itemId = ui.waitForItemSelection(vm.currentStock())) != -1) {
+    	while ((itemId = ui.waitForItemSelection(vm.currentStock())) != "") {
           TransactionResult result = vm.vend(itemId);
           
           switch (result) {
@@ -80,6 +80,8 @@ public class VendingMachineDriver {
     char letter = 'A';
     String identifier;
     int value = 0;
+    
+    // This is still broken, skips every other line
     
     try (FileInputStream file = new FileInputStream(filename)) {
       try (Scanner scan = new Scanner(file)) {

@@ -16,26 +16,27 @@ public class VendingMachine {
     return this.items;
   }
   
-  public TransactionResult vend(int itemId) {
-    if (itemId >= this.items.size()) {
-      return TransactionResult.INVALID_ITEM;
-    }
+  public TransactionResult vend(String itemId) {
     
-    final Item item = this.items.get(itemId);
+	  if (!this.containsID(items, itemId)) {   	
+		  return TransactionResult.INVALID_ITEM;
+	  }
     
-    if (new BigDecimal(item.price()).compareTo(this.money) == 1) {
-      return TransactionResult.INSUFFICIENT_FUNDS;
-    }
+	  final Item item = this.items.get(itemId);
     
-    if (item.quantity() < 1) {
-      return TransactionResult.OUT_OF_STOCK;
-    }
+	  if (new BigDecimal(item.price()).compareTo(this.money) == 1) {
+		  return TransactionResult.INSUFFICIENT_FUNDS;
+	  }
     
-    item.updateQuantity(-1);
-    this.money = this.money.subtract(new BigDecimal(item.price()));
-    this.revenue = this.revenue.add(new BigDecimal(item.price()));
-    return TransactionResult.SUCCESS;
-  }
+	  if (item.quantity() < 1) {
+		  return TransactionResult.OUT_OF_STOCK;
+	  }
+    
+	  item.updateQuantity(-1);
+	  this.money = this.money.subtract(new BigDecimal(item.price()));
+	  this.revenue = this.revenue.add(new BigDecimal(item.price()));
+	  return TransactionResult.SUCCESS;
+  	}
   
   public void insertMoney(BigDecimal money) {
     this.money = money;
@@ -53,5 +54,13 @@ public class VendingMachine {
     BigDecimal money = this.money;
     this.money = new BigDecimal(0);
     return money;
+  }
+  
+  public boolean containsID (final ArrayList<Item> list, final String id) {
+	  return list.stream().filter(o -> o.getID().equals(id)).findFirst().isPresent();
+  }
+  
+  public int idToIndex (String id) {
+	  
   }
 }
