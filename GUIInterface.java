@@ -5,12 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -43,14 +45,21 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 	private JLabel itemSelection;
 	private JLabel makeASelection;
 	private JLabel moneyRemaining;
+	private JPanel abcPad;
+	private JPanel numPad;
 	
 	public GUIInterface() {
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		this.setVisible(true);
-		Container container = new Container();
-		container.setVisible(true);
+		this.setLayout(new FlowLayout());
+		abcPad = new JPanel();
+		numPad = new JPanel();
+		numPad.setLayout(new GridLayout());
+		abcPad.setLayout(new GridLayout());
+		this.add(abcPad);
+		this.add(numPad);
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.add(container);
 		
 		menu = new JTextArea("Hi there");
 		search = new JTextArea("Hello");
@@ -60,25 +69,76 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 		buttonD = new ItemButton("D");
 		buttonE = new ItemButton("E");
 		buttonF = new ItemButton("F");
-		
-		container.add(search);
-		container.add(menu);
-		container.add(buttonA);
-		container.add(buttonB);
-		container.add(buttonC);
-		container.add(buttonD);
-		container.add(buttonE);
-		container.add(buttonF);
-		
-		GroupLayout layout = new GroupLayout(container);
-		container.setLayout(layout);
+		button1 = new ItemButton("1");
+		button2 = new ItemButton("2");
+		button3 = new ItemButton("3");
+		button4 = new ItemButton("4");
+		button5 = new ItemButton("5");
+		button6 = new ItemButton("6");
 		
 		
+		abcPad.add(buttonA);
+		abcPad.add(buttonB);
+		abcPad.add(buttonC);
+		abcPad.add(buttonD);
+		abcPad.add(buttonE);
+		abcPad.add(buttonF);
+		
+		numPad.add(button1);
+		numPad.add(button2);
+		numPad.add(button3);
+		numPad.add(button4);
+		numPad.add(button5);
+		numPad.add(button6);
+		
+		this.validate();
 		search.setEditable(false);
 	}
 	
 	public static void main(String[] args) {
 		GUIInterface gui = new GUIInterface();
+	}
+
+	@Override
+	public String waitForCategorySelection(Set<String> categories) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int waitForItemSelection(ArrayList<Item> items) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int waitForMoney() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void displayBalance(BigDecimal money) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void displayResult(TransactionResult result, BigDecimal change) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goodbye(BigDecimal totalRevenue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

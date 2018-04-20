@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +64,7 @@ public class VendingMachineDriver {
     for (String f : filenames) {
       String basename = f.split("\\.(?=[^\\.]+$)")[0];
       String category = basename.substring(0, 1).toUpperCase() + basename.substring(1);
-      categories.add(category, parseFile(f));
+      categories.put(category, parseFile(f));
     }
     
     return categories;
@@ -70,7 +73,7 @@ public class VendingMachineDriver {
   private static ArrayList<Item> parseFile(String filename) {
     ArrayList<Item> stock = new ArrayList<Item>();
     
-    try (File file = new File(filename)) {
+    try (FileInputStream file = new FileInputStream(filename)) {
       try (Scanner scan = new Scanner(file)) {
         for (int line = 0; scan.hasNextLine(); line++) {
           String[] tokens = scan.nextLine().split(",");
@@ -82,6 +85,8 @@ public class VendingMachineDriver {
           }
         }
       }
+    } catch (IOException fnfe) {
+    	System.out.println("Error! File not found!");
     }
     
     return stock;
