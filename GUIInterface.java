@@ -25,7 +25,8 @@ public class GUIInterface implements UserInterface, ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 900;
 	private static final int FRAME_HEIGHT = 700;
-	private static String vendingMachine;
+	private static String vendingMachine = "";
+	private static boolean selection = false;
 	private JTextArea menu;
 	private JTextArea search;
 	private ItemButton buttonA;
@@ -55,10 +56,7 @@ public class GUIInterface implements UserInterface, ActionListener {
 	public GUIInterface() {
 		
 		JFrame mainFrame = new JFrame();
-		JFrame machineSelect = new JFrame();
-		machineSelect.setTitle("Vending Machine Selection");
 		
-		machineSelect.setVisible(true);
 		mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		mainFrame.setVisible(false);
 		mainFrame.setLayout(new BorderLayout());
@@ -119,7 +117,26 @@ public class GUIInterface implements UserInterface, ActionListener {
 	public String waitForCategorySelection(Set<String> categories) {
 		String[] category = categories.stream().toArray(String[]::new);
 		chooseMachine = new JComboBox(category);
-		return null;
+		JFrame machineSelect = new JFrame();
+		machineSelect.setTitle("Vending Machine Selection");
+		machineSelect.setSize(FRAME_HEIGHT, FRAME_WIDTH);
+		machineSelect.setLayout(new BorderLayout());
+		machineSelect.add(chooseMachine);
+		machineSelect.setVisible(true);
+		machineSelect.validate();
+		
+		synchronized(this) {
+			while(vendingMachine == "") {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Error! Interrupted thread!");
+				}
+			}
+		}
+		this.selection = false;
+		return vendingMachine;
 		
 		
 	}
@@ -156,6 +173,14 @@ public class GUIInterface implements UserInterface, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() instanceof JComboBox) {
+			synchronized(this) {
+			JComboBox cb = (JComboBox)event.getSource();
+			this.vendingMachine = (String)cb.getSelectedItem();
+			this.selection = true;
+			this.chooseMachine.notifyAll();
+			}
+		}
 		}
 
 }

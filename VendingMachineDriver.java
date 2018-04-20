@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class VendingMachineDriver {
-  public static void main(String[] filenames) {
+  public static void main(String[] args) {
     
+	String[] filenames = {"data/snacks.txt", "data/drinks.txt"};
     UserInterface ui = new GUIInterface();
     Map<String, ArrayList<Item>> categories = getCategories(filenames);
     BigDecimal revenue = new BigDecimal(0);
@@ -71,8 +72,11 @@ public class VendingMachineDriver {
   }
   
   private static ArrayList<Item> parseFile(String filename) {
-    ArrayList<Item> stock = new ArrayList<Item>();
     
+	ArrayList<Item> stock = new ArrayList<Item>();
+    String[] tokens;
+	
+	
     char letter = 'A';
     String identifier;
     int value = 0;
@@ -80,13 +84,25 @@ public class VendingMachineDriver {
     try (FileInputStream file = new FileInputStream(filename)) {
       try (Scanner scan = new Scanner(file)) {
         for (int line = 0; scan.hasNextLine(); line++) {
-          if (line%5 == 0) {
-        	  value++;
+          value++;
+          if (value == 7) {
+        	  value = 1;
           }
-          String[] tokens = scan.nextLine().split(",");
+          if (line != 0 && line%6 == 0) {
+        	  letter++;
+          }
+          
+          if (line !=0) {
+        	  scan.nextLine();
+          }
+          if (!scan.hasNextLine()) {
+        	  return stock;
+          }
+          tokens = scan.nextLine().split(",");
           identifier = Character.toString(letter) + value;
           try {
             stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
+            System.out.println(stock.get(line).description());
             System.out.println(stock.get(line).getID());
           } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
             System.err.println("Bad item in file " + filename + 
