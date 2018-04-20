@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -80,42 +82,46 @@ public class VendingMachineDriver {
     char letter = 'A';
     String identifier;
     int value = 0;
-    
+    int line = 0;
+    String data;
+    BufferedReader br = null;
+    FileReader fr = null;
     // This is still broken, skips every other line
     
-    try (FileInputStream file = new FileInputStream(filename)) {
-      try (Scanner scan = new Scanner(file)) {
-        for (int line = 0; scan.hasNextLine(); line++) {
-          value++;
-          if (value == 7) {
-        	  value = 1;
-          }
-          if (line != 0 && line%6 == 0) {
-        	  letter++;
-          }
-          
-          if (line !=0) {
-        	  scan.nextLine();
-          }
-          if (!scan.hasNextLine()) {
-        	  return stock;
-          }
-          tokens = scan.nextLine().split(",");
-          identifier = Character.toString(letter) + value;
-          try {
-            stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
-            System.out.println(stock.get(line).description());
-            System.out.println(stock.get(line).getID());
-          } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
-            System.err.println("Bad item in file " + filename + 
-                " on line " + (line+1) + " of " + filename);
-          }
-        }
-      }
-    } catch (IOException fnfe) {
-    	System.out.println("Error! File not found!");
-    }
     
-    return stock;
-  }
+      try {
+    	  fr = new FileReader(filename);
+    	  br = new BufferedReader(fr);
+      } catch (IOException ioe) {
+    	  System.out.println("Error! File not found!");
+    	
+       try {
+		while ((data = br.readLine()) != null) {
+			   	   
+		       line++;
+		       value++;
+		       if (value == 7) {
+		     	  value = 1;
+		       }
+		       if (line != 0 && line%6 == 0) {
+		     	  letter++;
+		       }
+		       
+		       tokens = data.split(",");
+		       identifier = Character.toString(letter) + value;
+		       try {
+		         stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
+		         System.out.println(stock.get(line).description());
+		         System.out.println(stock.get(line).getID());
+		       } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+		         System.err.println("Bad item in file " + filename + 
+		             " on line " + (line+1) + " of " + filename);
+		       }
+		     }
+	} catch (IOException e) {
+		System.out.println("Error! File not found!");
+	}
+       }
+      return stock;
+    }
 }

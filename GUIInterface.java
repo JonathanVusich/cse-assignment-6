@@ -146,9 +146,9 @@ public class GUIInterface implements UserInterface, ActionListener {
 	}
 
 	@Override
-	public BigDecimal waitForItemSelection(ArrayList<Item> items) {
+	public String waitForItemSelection(ArrayList<Item> items) {
 		// TODO Auto-generated method stub
-		return new BigDecimal(0);
+		return null;
 	}
 
 	@Override
