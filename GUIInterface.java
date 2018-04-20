@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,11 +20,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
-public class GUIInterface extends JFrame implements ActionListener, UserInterface {
+public class GUIInterface implements UserInterface, ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 900;
 	private static final int FRAME_HEIGHT = 700;
+	private static String vendingMachine;
 	private JTextArea menu;
 	private JTextArea search;
 	private ItemButton buttonA;
@@ -47,22 +50,25 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 	private JLabel moneyRemaining;
 	private JPanel abcPad;
 	private JPanel numPad;
+	private JComboBox chooseMachine;
 	
 	public GUIInterface() {
-		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		this.setVisible(true);
-		this.setLayout(new FlowLayout());
+		
+		JFrame mainFrame = new JFrame();
+		JFrame machineSelect = new JFrame();
+		machineSelect.setTitle("Vending Machine Selection");
+		
+		machineSelect.setVisible(true);
+		mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		mainFrame.setVisible(false);
+		mainFrame.setLayout(new BorderLayout());
 		abcPad = new JPanel();
 		numPad = new JPanel();
-		numPad.setLayout(new GridLayout());
-		abcPad.setLayout(new GridLayout());
-		this.add(abcPad);
-		this.add(numPad);
 		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		menu = new JTextArea("Hi there");
-		search = new JTextArea("Hello");
+		numPad.setLayout(new GridLayout(2,3,15,15));
+		abcPad.setLayout(new GridLayout(2,3,15,15));
+		
 		buttonA = new ItemButton("A");
 		buttonB = new ItemButton("B");
 		buttonC = new ItemButton("C");
@@ -91,7 +97,17 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 		numPad.add(button5);
 		numPad.add(button6);
 		
-		this.validate();
+		
+		mainFrame.add(abcPad, BorderLayout.CENTER);
+		mainFrame.add(numPad, BorderLayout.WEST);
+		
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		menu = new JTextArea("Hi there");
+		search = new JTextArea("Hello");
+		
+		
+		mainFrame.validate();
 		search.setEditable(false);
 	}
 	
@@ -101,8 +117,11 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 
 	@Override
 	public String waitForCategorySelection(Set<String> categories) {
-		// TODO Auto-generated method stub
+		String[] category = categories.stream().toArray(String[]::new);
+		chooseMachine = new JComboBox(category);
 		return null;
+		
+		
 	}
 
 	@Override
@@ -136,9 +155,7 @@ public class GUIInterface extends JFrame implements ActionListener, UserInterfac
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void actionPerformed(ActionEvent event) {
+		}
 
 }

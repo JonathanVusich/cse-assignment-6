@@ -73,12 +73,21 @@ public class VendingMachineDriver {
   private static ArrayList<Item> parseFile(String filename) {
     ArrayList<Item> stock = new ArrayList<Item>();
     
+    char letter = 'A';
+    String identifier;
+    int value = 0;
+    
     try (FileInputStream file = new FileInputStream(filename)) {
       try (Scanner scan = new Scanner(file)) {
         for (int line = 0; scan.hasNextLine(); line++) {
+          if (line%5 == 0) {
+        	  value++;
+          }
           String[] tokens = scan.nextLine().split(",");
+          identifier = Character.toString(letter) + value;
           try {
-            stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2])));
+            stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
+            System.out.println(stock.get(line).getID());
           } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
             System.err.println("Bad item in file " + filename + 
                 " on line " + (line+1) + " of " + filename);
