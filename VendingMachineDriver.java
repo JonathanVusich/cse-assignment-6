@@ -44,6 +44,10 @@ public class VendingMachineDriver {
             case INSUFFICIENT_FUNDS:
               ui.displayResult(result, vm.getBalance());
               break back_to_insert_money;
+              
+            case OUT_OF_STOCK:
+            	ui.displayResult(result, vm.getBalance());
+            	break back_to_insert_money;
              
             default: // INVALID_ITEM and OUT_OF_STOCK
               ui.displayResult(result, vm.getBalance());

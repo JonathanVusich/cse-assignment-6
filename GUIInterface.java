@@ -54,6 +54,8 @@ public class GUIInterface implements UserInterface, ActionListener {
 	private JPanel abcPad;
 	private JPanel numPad;
 	private JComboBox chooseMachine;
+	private JTextField enterMoney;
+	private BigDecimal money;
 	
 	public GUIInterface() {
 		
@@ -131,7 +133,7 @@ public class GUIInterface implements UserInterface, ActionListener {
 		
 		JFrame machineSelect = new JFrame();
 		machineSelect.setTitle("Vending Machine Selection");
-		machineSelect.setSize(FRAME_HEIGHT, FRAME_WIDTH);
+		machineSelect.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		machineSelect.setLayout(new BorderLayout());
 		machineSelect.add(chooseMachine);
 		machineSelect.setVisible(true);
@@ -155,8 +157,34 @@ public class GUIInterface implements UserInterface, ActionListener {
 
 	@Override
 	public BigDecimal waitForMoney() {
-		// TODO Auto-generated method stub
-		return new BigDecimal(0);
+		enterMoney = new JTextField(8);
+		enterMoney.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if (event.getSource() instanceof JTextField) {
+					JTextField jtf = (JTextField)event.getSource();
+					double cash = Double.parseDouble(jtf.getText());
+					money = new BigDecimal(cash);
+					selection = true;
+				}
+			}
+		});
+		
+		JFrame getMoney = new JFrame();
+		getMoney.setTitle("Enter money");
+		getMoney.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		getMoney.setLayout(new BorderLayout());
+		getMoney.add(enterMoney);
+		getMoney.setVisible(true);
+		getMoney.validate();
+		
+		while(!selection) {
+			
+		}
+		this.selection = false;
+		getMoney.setVisible(false);
+		return money;
+		
+		
 	}
 
 	@Override
