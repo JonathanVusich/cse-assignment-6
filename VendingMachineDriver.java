@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.lang.Thread;
 
 public class VendingMachineDriver {
   public static void main(String[] args) {
@@ -19,6 +20,9 @@ public class VendingMachineDriver {
     BigDecimal revenue = new BigDecimal(0);
     String categoryName;
     String itemId;
+    
+    GUIInterface gui = new GUIInterface();
+    new Thread(gui).start();
     
     while ((categoryName = ui.waitForCategorySelection(categories.keySet())) != "") {
     	VendingMachine vm = new VendingMachine(categories.get(categoryName));

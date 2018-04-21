@@ -23,7 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
-public class GUIInterface implements UserInterface, ActionListener {
+public class GUIInterface implements UserInterface, ActionListener, Runnable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 900;
@@ -117,8 +117,9 @@ public class GUIInterface implements UserInterface, ActionListener {
 		
 	}
 	
-	public static void main(String[] args) {
-		GUIInterface gui = new GUIInterface();
+	public void run() {
+
+		mainFrame.setVisible(true);
 	}
 
 	@Override
