@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -56,10 +57,11 @@ public class GUIInterface implements UserInterface, ActionListener {
 	private JComboBox chooseMachine;
 	private JTextField enterMoney;
 	private BigDecimal money;
+	private static JFrame mainFrame;
 	
 	public GUIInterface() {
 		
-		JFrame mainFrame = new JFrame();
+		mainFrame = new JFrame();
 		
 		mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		mainFrame.setVisible(false);
@@ -111,6 +113,8 @@ public class GUIInterface implements UserInterface, ActionListener {
 		
 		mainFrame.validate();
 		search.setEditable(false);
+		
+		
 	}
 	
 	public static void main(String[] args) {
@@ -198,14 +202,20 @@ public class GUIInterface implements UserInterface, ActionListener {
 
 	@Override
 	public void displayResult(TransactionResult result, BigDecimal change) {
-		// TODO Auto-generated method stub
-		
+		if (result == TransactionResult.SUCCESS) {
+		JOptionPane.showMessageDialog(mainFrame, "Transaction completed successfully!");
+		} else if (result == TransactionResult.INVALID_ITEM) {
+			JOptionPane.showMessageDialog(mainFrame, "Error! Invalid item!");
+		} else if (result == TransactionResult.INSUFFICIENT_FUNDS) {
+			JOptionPane.showMessageDialog(mainFrame, "Error! You have insufficient funds to purchase this item!");
+		} else {
+			JOptionPane.showMessageDialog(mainFrame, "Error! This item is out of stock!");
+		}
 	}
 
 	@Override
 	public void goodbye(BigDecimal totalRevenue) {
-		// TODO Auto-generated method stub
-		
+		JOptionPane.showMessageDialog(mainFrame, "Thank you for your purchases!");
 	}
 
 	@Override
