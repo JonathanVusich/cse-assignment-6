@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
@@ -48,7 +50,7 @@ public class GUIInterface implements UserInterface, ActionListener {
 	private JTextPane searchResults;
 	private JLabel itemSelection;
 	private JLabel makeASelection;
-	private JLabel moneyRemaining;
+	private JTextField moneyRemaining = null;
 	private JPanel abcPad;
 	private JPanel numPad;
 	private JComboBox chooseMachine;
@@ -159,7 +161,10 @@ public class GUIInterface implements UserInterface, ActionListener {
 
 	@Override
 	public void displayBalance(BigDecimal money) {
-		// TODO Auto-generated method stub
+		StringBuilder sb = new StringBuilder();
+		Formatter formatter = new Formatter(sb, Locale.US);
+		formatter.format("$.2f", money);
+		this.moneyRemaining.setText(sb.toString());
 		
 	}
 
