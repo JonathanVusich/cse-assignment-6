@@ -92,14 +92,11 @@ public class VendingMachineDriver {
       try {
     	  fr = new FileReader(filename);
     	  br = new BufferedReader(fr);
-      } catch (IOException ioe) {
-    	  System.out.println("Error! File not found!");
-    	
-       try {
-		while ((data = br.readLine()) != null) {
-			   	   
-		       line++;
-		       value++;
+    	  while ((data = br.readLine()) != null) {
+		       if (data.length() == 0) {
+		    	   continue;
+		       }
+    		   value++;
 		       if (value == 7) {
 		     	  value = 1;
 		       }
@@ -113,6 +110,7 @@ public class VendingMachineDriver {
 		         stock.add(new Item(tokens[0], Double.parseDouble(tokens[1]), Integer.parseInt(tokens[2]), identifier));
 		         System.out.println(stock.get(line).description());
 		         System.out.println(stock.get(line).getID());
+		         line++;
 		       } catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
 		         System.err.println("Bad item in file " + filename + 
 		             " on line " + (line+1) + " of " + filename);
@@ -121,7 +119,6 @@ public class VendingMachineDriver {
 	} catch (IOException e) {
 		System.out.println("Error! File not found!");
 	}
-       }
       return stock;
     }
 }
