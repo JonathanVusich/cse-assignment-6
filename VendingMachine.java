@@ -41,7 +41,7 @@ public class VendingMachine {
     
 	  final Item item = this.items.get(idToIndex(itemId));
     
-	  if (new BigDecimal(item.price()).compareTo(this.money) == 1) {
+	  if (new BigDecimal(item.price()).compareTo(this.money) < 1) {
 		  return TransactionResult.INSUFFICIENT_FUNDS;
 	  }
     
@@ -82,5 +82,9 @@ public class VendingMachine {
 	  int valueOfLetter = letterMap.get(id.charAt(0));
 	  int value = Integer.parseInt(id.substring(1, 2));
 	  return valueOfLetter + value - 1;
+  }
+  
+  public ArrayList<Item> getItems() {
+	  return this.items;
   }
 }

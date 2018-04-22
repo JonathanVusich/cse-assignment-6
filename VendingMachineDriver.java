@@ -20,6 +20,7 @@ public class VendingMachineDriver {
     BigDecimal revenue = new BigDecimal(0);
     String categoryName;
     String itemId;
+    BigDecimal money;
     
     GUIInterface gui = new GUIInterface();
     new Thread(gui).start();
@@ -27,14 +28,12 @@ public class VendingMachineDriver {
     while ((categoryName = ui.waitForCategorySelection(categories.keySet())) != "") {
     	VendingMachine vm = new VendingMachine(categories.get(categoryName));
       
-      back_to_category_select:
-      while (true) {
-        if (ui.waitForMoney() == new BigDecimal(-1)) {
-          ui.displayResult(TransactionResult.CANCELLED, vm.dispenseChange());
-          break back_to_category_select;
-        }
-        
-        ui.displayBalance(vm.getBalance());
+      back_to_insert_more_money:
+      while ((money = ui.waitForMoney()) != new BigDecimal(0)) {
+    	vm.insertMoney(money);
+    	
+    	back_to_category_select:
+    	while (true) {
         
         back_to_insert_money:
     	while ((itemId = ui.waitForItemSelection(vm.currentStock())) != "") {
@@ -62,6 +61,7 @@ public class VendingMachineDriver {
       
       // Exiting this vending machine back to category select
       revenue = revenue.add(vm.revenue());
+    }
     }
     
     ui.goodbye(revenue);

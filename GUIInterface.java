@@ -10,6 +10,7 @@ import java.util.Formatter;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,7 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
-public class GUIInterface implements UserInterface, ActionListener, Runnable {
+public class GUIInterface extends JFrame implements UserInterface, ActionListener, Runnable {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int FRAME_WIDTH = 900;
@@ -32,6 +33,10 @@ public class GUIInterface implements UserInterface, ActionListener, Runnable {
 	private static boolean selection = false;
 	private JTextArea menu;
 	private JTextArea search;
+	private JTextField searchResults;
+	
+	// ItemButtons
+	
 	private ItemButton buttonA;
 	private ItemButton buttonB;
 	private ItemButton buttonC;
@@ -44,34 +49,55 @@ public class GUIInterface implements UserInterface, ActionListener, Runnable {
 	private ItemButton button4;
 	private ItemButton button5;
 	private ItemButton button6;
+	
 	private JButton getChange;
 	private JButton addMoney;
 	private JButton vend;
-	private JScrollPane scrollBar = new JScrollPane(menu);
-	private JTextPane searchResults;
+	
+	private JScrollPane scrollBar;
+	
+	
 	private JLabel itemSelection;
-	private JLabel makeASelection;
+	private JLabel moneyLabel;
+	private JLabel itemSearch;
+	private JLabel itemResults;
+	private JLabel makeSelection;
+	
 	private JTextField moneyRemaining = null;
+	private JTextField itemSelect = null;
+	private JTextField itemSearchBox = null;
+	
 	private JPanel abcPad;
 	private JPanel numPad;
-	private JComboBox chooseMachine;
-	private JTextField enterMoney;
+	private JPanel mainFrame;
+	private JPanel rightPane;
+	private JPanel leftPane;
+	private JPanel searchPane;
+	private JPanel padPane1;
+	private JPanel padPane2;
+	private JPanel padPane;
+	private JPanel assortedElements;
+	
 	private BigDecimal money;
-	private static JFrame mainFrame;
 	
 	public GUIInterface() {
 		
-		mainFrame = new JFrame();
-		
+		mainFrame = new JPanel(new GridLayout(1,2,5,5));
 		mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		mainFrame.setVisible(false);
-		mainFrame.setLayout(new BorderLayout());
-		abcPad = new JPanel();
-		numPad = new JPanel();
+		this.setLocationRelativeTo(null);
+		rightPane = new JPanel();
+		rightPane.setLayout(new BoxLayout(rightPane, BoxLayout.Y_AXIS));
+		searchPane = new JPanel();
+		searchPane.setLayout(new BoxLayout(searchPane, BoxLayout.Y_AXIS));
+		padPane1 = new JPanel();
+		padPane1.setLayout(new BoxLayout(padPane1, BoxLayout.Y_AXIS));
+		padPane2 = new JPanel();
+		padPane2.setLayout(new BoxLayout(padPane2, BoxLayout.Y_AXIS));
+		padPane = new JPanel(new GridLayout(1,2,30,30));
+		leftPane = new JPanel(new BorderLayout());
 		
-		
-		numPad.setLayout(new GridLayout(2,3,15,15));
-		abcPad.setLayout(new GridLayout(2,3,15,15));
+		abcPad = new JPanel(new GridLayout(2,3,15,15));
+		numPad = new JPanel(new GridLayout(2,3,15,15));
 		
 		buttonA = new ItemButton("A");
 		buttonB = new ItemButton("B");
@@ -102,94 +128,105 @@ public class GUIInterface implements UserInterface, ActionListener, Runnable {
 		numPad.add(button6);
 		
 		
-		mainFrame.add(abcPad, BorderLayout.CENTER);
-		mainFrame.add(numPad, BorderLayout.WEST);
+		padPane1.add(abcPad);
+		itemSelection = new JLabel("Item Selection:");
+		padPane1.add(itemSelection);
+		moneyLabel = new JLabel("Money remaining:");
+		padPane1.add(moneyLabel);
+		getChange = new JButton("Get Change");
+		getChange.addActionListener(this);
+		padPane1.add(getChange);
 		
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		padPane2.add(numPad);
+		itemSelect = new JTextField(10);
+		padPane2.add(itemSelect);
+		moneyRemaining = new JTextField(10);
+		padPane2.add(moneyRemaining);
+		addMoney = new JButton("Add Money");
+		addMoney.addActionListener(this);
+		padPane2.add(addMoney);
+		
+		padPane = new JPanel(new GridLayout(1,2,30,30));
+		padPane.add(padPane1);
+		padPane.add(padPane2);
+		
+		leftPane.add(padPane, BorderLayout.CENTER);
+		
+		assortedElements = new JPanel();
+		assortedElements.setLayout(new BoxLayout(assortedElements, BoxLayout.Y_AXIS));
+		itemSearch = new JLabel("Search for item:");
+		assortedElements.add(itemSearch);
+		itemSearchBox = new JTextField(10);
+		itemSearchBox.addActionListener(this);
+		assortedElements.add(itemSearchBox);
+		itemResults = new JLabel("");
+		assortedElements.add(itemResults);
+		makeSelection = new JLabel("Make a selection:");
+		assortedElements.add(makeSelection);
+		
+		leftPane.add(assortedElements, BorderLayout.NORTH);
+		
+		// Set up right pane
+		
+		
+		
+		
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		menu = new JTextArea("Hi there");
 		search = new JTextArea("Hello");
 		
 		
-		mainFrame.validate();
+		this.validate();
+		mainFrame.setVisible(true);
 		search.setEditable(false);
 		
 		
 	}
 	
 	public void run() {
-
-		mainFrame.setVisible(true);
+		this.setVisible(true);
 	}
 
 	@Override
 	public String waitForCategorySelection(Set<String> categories) {
 		String[] category = categories.stream().toArray(String[]::new);
-		chooseMachine = new JComboBox(category);
-		chooseMachine.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				if (event.getSource() instanceof JComboBox) {
-					JComboBox cb = (JComboBox)event.getSource();
-					vendingMachine = (String)cb.getSelectedItem();
-					selection = true;				
-				}
+		JFrame frame = new JFrame();
+			String selection = (String)JOptionPane.showInputDialog(frame, "Please select the vending machine \n that you wish to purchase from:", "Input Money", JOptionPane.PLAIN_MESSAGE, null, category, category[0]);
+			if (selection == null) {
+				System.exit(0);
 			}
-		});
-		
-		JFrame machineSelect = new JFrame();
-		machineSelect.setTitle("Vending Machine Selection");
-		machineSelect.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		machineSelect.setLayout(new BorderLayout());
-		machineSelect.add(chooseMachine);
-		machineSelect.setVisible(true);
-		machineSelect.validate();
-		
-		while(!selection) {
-		}
-		
-		this.selection = false;
-		machineSelect.setVisible(false);
-		return vendingMachine;
-		
+			return selection;
 		
 	}
 
 	@Override
 	public String waitForItemSelection(ArrayList<Item> items) {
 		// TODO Auto-generated method stub
-		return null;
+		return "A1";
 	}
 
 	@Override
 	public BigDecimal waitForMoney() {
-		enterMoney = new JTextField(8);
-		enterMoney.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				if (event.getSource() instanceof JTextField) {
-					JTextField jtf = (JTextField)event.getSource();
-					double cash = Double.parseDouble(jtf.getText());
-					money = new BigDecimal(cash);
-					selection = true;
-				}
+		JFrame frame = new JFrame();
+		boolean input = false;
+		BigDecimal money = new BigDecimal(0);
+		double number = 0;
+		while (!input) {
+			String text = (String)JOptionPane.showInputDialog("Please enter the amount of money that you would like to spend", null);
+			try {
+				number = Double.parseDouble(text);
+				input = true;
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(frame, "Error! Invalid input!", "Error!", JOptionPane.ERROR_MESSAGE);
 			}
-		});
-		
-		JFrame getMoney = new JFrame();
-		getMoney.setTitle("Enter money");
-		getMoney.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-		getMoney.setLayout(new BorderLayout());
-		getMoney.add(enterMoney);
-		getMoney.setVisible(true);
-		getMoney.validate();
-		
-		while(!selection) {
-			
-		}
-		this.selection = false;
-		getMoney.setVisible(false);
+			money = new BigDecimal(number);
+			if (money.compareTo(new BigDecimal(0)) < 0) {
+				JOptionPane.showMessageDialog(frame, "Error! Not a valid amount of money!", "Error!", JOptionPane.ERROR_MESSAGE);
+				input = false;
+			}
+		}	
 		return money;
-		
-		
 	}
 
 	@Override
@@ -204,19 +241,19 @@ public class GUIInterface implements UserInterface, ActionListener, Runnable {
 	@Override
 	public void displayResult(TransactionResult result, BigDecimal change) {
 		if (result == TransactionResult.SUCCESS) {
-		JOptionPane.showMessageDialog(mainFrame, "Transaction completed successfully!");
+		JOptionPane.showMessageDialog(this, "Transaction completed successfully!");
 		} else if (result == TransactionResult.INVALID_ITEM) {
-			JOptionPane.showMessageDialog(mainFrame, "Error! Invalid item!");
+			JOptionPane.showMessageDialog(this, "Error! Invalid item!");
 		} else if (result == TransactionResult.INSUFFICIENT_FUNDS) {
-			JOptionPane.showMessageDialog(mainFrame, "Error! You have insufficient funds to purchase this item!");
+			JOptionPane.showMessageDialog(this, "Error! You have insufficient funds to purchase this item!");
 		} else {
-			JOptionPane.showMessageDialog(mainFrame, "Error! This item is out of stock!");
+			JOptionPane.showMessageDialog(this, "Error! This item is out of stock!");
 		}
 	}
 
 	@Override
 	public void goodbye(BigDecimal totalRevenue) {
-		JOptionPane.showMessageDialog(mainFrame, "Thank you for your purchases!");
+		JOptionPane.showMessageDialog(this, "Thank you for your purchases!");
 	}
 
 	@Override
