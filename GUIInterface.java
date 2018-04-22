@@ -168,6 +168,9 @@ public class GUIInterface extends JFrame implements UserInterface, ActionListene
 		
 		// Set up right pane
 		
+		mainFrame.add(leftPane);
+		this.add(mainFrame);
+		this.setVisible(true);
 		
 		
 		
@@ -185,7 +188,7 @@ public class GUIInterface extends JFrame implements UserInterface, ActionListene
 	}
 	
 	public void run() {
-		this.setVisible(true);
+		mainFrame.setVisible(true);
 	}
 
 	@Override
